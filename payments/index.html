@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Automatisierte Versionierung via CI/CD -->
+    <meta name="xsyna-version" content="1.0.0+alpha.29032026.7f3a2d">
+    <title>xSyna Payments | Projektfinanzierung</title>
+    <meta name="description" content="Ressourcen-Management und Finanzabwicklung für das unabhängige Forschungsprojekt xSyna.">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        neon: {
+                            blue: '#00f0ff',
+                            purple: '#7000ff',
+                            green: '#00ff9d',
+                            gold: '#ffd700',
+                            silver: '#e2e8f0'
+                        },
+                        dark: {
+                            900: '#0a0a0c',
+                            800: '#121215',
+                            700: '#1c1c21'
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #0a0a0c;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        
+        .glass-card {
+            background: rgba(28, 28, 33, 0.4);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 40%, transparent 100%);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .glow-text-gold {
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-neon-gold selection:text-dark-900">
+
+    <!-- Interaktiver Hintergrund -->
+    <canvas id="neuralCanvas" class="fixed top-0 left-0 w-full h-full -z-10 opacity-30"></canvas>
+    <div class="fixed top-0 left-0 w-full h-full -z-20 bg-dark-900"></div>
+    <div class="fixed top-0 left-0 w-full h-screen -z-10 bg-grid pointer-events-none"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-card border-b-0 border-t-0 border-l-0 border-r-0 border-b border-white/10 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold tracking-tighter flex items-center gap-2">
+                <i data-lucide="wallet" class="text-neon-gold"></i>
+                <span>xSyna Payments<span class="text-neon-gold">.</span></span>
+            </div>
+            <div class="hidden md:flex gap-8 text-sm font-mono text-gray-400">
+                <a href="/" class="hover:text-white transition-colors flex items-center gap-2">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Zurück zu xSyna
+                </a>
+                <a href="#zahlungswege" class="hover:text-neon-gold transition-colors">01. Transaktionen</a>
+                <a href="#struktur" class="hover:text-neon-gold transition-colors">02. Ablauf</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <main class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden min-h-[80vh] flex items-center">
+        <div class="max-w-7xl mx-auto px-6 relative z-10 w-full">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-card border border-neon-gold/30 text-neon-gold text-xs font-mono mb-6 reveal">
+                <i data-lucide="lock" class="w-3 h-3"></i>
+                Ressourcen-Management & Projektfinanzierung
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-8 reveal" style="transition-delay: 100ms;">
+                Smarte Finanzierung.<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-neon-silver to-neon-gold glow-text-gold">Maximale Effizienz.</span>
+            </h1>
+            
+            <p class="text-lg md:text-xl text-gray-400 max-w-2xl mb-12 font-light leading-relaxed reveal" style="transition-delay: 200ms;">
+                Die Abteilung xSyna Payments kümmert sich um die sichere, transparente und zweckgebundene Abwicklung aller finanziellen Ressourcen, die direkt in die Erforschung unserer SPU-Architektur fließen.
+            </p>
+        </div>
+    </main>
+
+    <!-- Effizienz / Bootstrapping Banner -->
+    <section class="py-12 border-y border-white/5 bg-dark-800/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 reveal">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-8 p-6 md:p-8 rounded-2xl glass-card border-neon-gold/20 relative overflow-hidden">
+                <div class="absolute right-0 top-0 w-64 h-64 bg-neon-gold/5 rounded-full blur-3xl -z-10 transform translate-x-1/2 -translate-y-1/2"></div>
+                
+                <div class="max-w-2xl">
+                    <h3 class="text-xl font-bold mb-2 flex items-center gap-2 text-white">
+                        <i data-lucide="bar-chart" class="text-neon-green"></i> Kompromissloses Lean Management
+                    </h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        Wir glauben, dass Forschungskapital in Hardware fließen sollte, nicht in Verwaltung. Durch eine hochmoderne, dezentrale Infrastruktur betreiben wir das gesamte xSyna-Netzwerk (inklusive unbegrenzter Custom-Mails und statischem Edge-Hosting) mit <strong>jährlichen Fixkosten von exakt 4,49 €</strong>. Jeder gesponserte Euro darüber hinaus geht zu 100 % in die neuromorphe Entwicklung.
+                    </p>
+                </div>
+                <div class="text-center md:text-right flex-shrink-0">
+                    <div class="text-4xl font-mono font-bold text-neon-green mb-1">4,49 €</div>
+                    <div class="text-xs text-gray-500 font-mono uppercase tracking-widest">Fixkosten / Jahr</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Zahlungswege -->
+    <section id="zahlungswege" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-sm font-mono text-neon-gold mb-2 reveal">01. Transaktionen</h2>
+            <h3 class="text-3xl md:text-5xl font-bold mb-16 reveal">Zahlungswege & Sponsoring</h3>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- PayPal -->
+                <div class="glass-card p-8 rounded-2xl reveal relative overflow-hidden group border border-white/10 hover:border-neon-blue/50 transition-colors">
+                    <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i data-lucide="credit-card" class="w-24 h-24"></i>
+                    </div>
+                    <div class="relative z-10">
+                        <h4 class="text-2xl font-bold mb-4 flex items-center gap-3">
+                            <span class="w-10 h-10 rounded-lg bg-[#00457C] flex items-center justify-center">
+                                <span class="font-bold text-white text-lg italic">P</span>
+                            </span>
+                            PayPal
+                        </h4>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                            Unser primärer Transaktionsweg. Schnell, sicher und international etabliert. Eignet sich ideal für direkte Projektunterstützung, den Erwerb von Prototypen-Kontingenten oder Sponsoring-Beiträge.
+                        </p>
+                        <a href="mailto:payments@xsyna.de?subject=Anfrage%20PayPal%20Transaktion" class="inline-flex items-center gap-2 text-sm font-mono text-neon-blue hover:text-white transition-colors">
+                            Details anfordern <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Guthabenkarten -->
+                <div class="glass-card p-8 rounded-2xl reveal relative overflow-hidden group border border-white/10 hover:border-neon-gold/50 transition-colors" style="transition-delay: 100ms;">
+                    <div class="absolute top-0 right-0 p-6 opacity-10 group-hover:opacity-20 transition-opacity">
+                        <i data-lucide="gift" class="w-24 h-24"></i>
+                    </div>
+                    <div class="relative z-10">
+                        <h4 class="text-2xl font-bold mb-4 flex items-center gap-3">
+                            <span class="w-10 h-10 rounded-lg bg-dark-700 border border-white/20 flex items-center justify-center">
+                                <i data-lucide="qr-code" class="w-5 h-5 text-neon-silver"></i>
+                            </span>
+                            Guthabenkarten
+                        </h4>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                            Um Unterstützern maximale Flexibilität zu bieten, akzeptieren wir nach <strong class="text-white">vorheriger Absprache</strong> auch etablierte Guthabenkarten. Dies ermöglicht unkomplizierte Mikro-Förderungen ohne klassische Banklaufzeiten.
+                        </p>
+                        <a href="mailto:payments@xsyna.de?subject=Anfrage%20Guthabenkarte" class="inline-flex items-center gap-2 text-sm font-mono text-neon-gold hover:text-white transition-colors">
+                            Verfügbarkeit prüfen <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hierarchie & Kontakt -->
+    <section id="struktur" class="py-24 bg-dark-800/30 border-t border-white/5 relative">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <div class="reveal max-w-3xl mx-auto">
+                <i data-lucide="git-branch" class="w-12 h-12 text-gray-500 mx-auto mb-6"></i>
+                <h3 class="text-3xl font-bold mb-6">Strikte Ablauf-Hierarchie</h3>
+                <p class="text-gray-400 mb-8 leading-relaxed">
+                    Aus Sicherheits- und Dokumentationsgründen handelt das Payments-Team nicht eigenmächtig. <strong>Alle finanziellen Freigaben, Rechnungsstellungen und Sponsoring-Verträge werden primär von der Projektleitung (Service) geprüft und angewiesen.</strong>
+                </p>
+                
+                <div class="inline-flex flex-col md:flex-row items-center gap-4 p-4 rounded-xl glass-card font-mono text-sm w-full md:w-auto">
+                    <div class="flex items-center gap-2 text-gray-400">
+                        <i data-lucide="mail" class="w-4 h-4"></i> service@xsyna.de
+                    </div>
+                    <i data-lucide="arrow-right" class="w-4 h-4 text-neon-gold hidden md:block"></i>
+                    <i data-lucide="arrow-down" class="w-4 h-4 text-neon-gold md:hidden"></i>
+                    <div class="flex items-center gap-2 text-white bg-white/5 px-4 py-2 rounded-lg border border-white/10">
+                        <i data-lucide="mail" class="w-4 h-4 text-neon-gold"></i> payments@xsyna.de
+                    </div>
+                </div>
+                
+                <p class="text-xs text-gray-500 mt-8 max-w-lg mx-auto">
+                    Wenn Sie direkt Fragen zu einer bestehenden Überweisung, Ihrem Kontostand im Projekt oder konkreten Finanzdaten haben, können Sie sich dennoch jederzeit direkt an <a href="mailto:payments@xsyna.de" class="text-neon-gold hover:underline">payments@xsyna.de</a> wenden.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-8 border-t border-white/10 text-center relative z-10 bg-dark-900">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col items-center">
+            <div class="flex items-center gap-2 mb-4">
+                <i data-lucide="cpu" class="text-gray-500 w-5 h-5"></i>
+                <span class="font-bold tracking-tighter text-gray-400">xSyna Project</span>
+            </div>
+            <p class="text-xs text-gray-600 max-w-xl mb-4">
+                © 2026 xSyna Administration. Alle Transaktionen dienen der Finanzierung unabhängiger Forschung. Kein eingetragenes Gewerbe.
+            </p>
+            <!-- Simulierte injizierte Versionsnummer -->
+            <div class="font-mono text-[10px] text-gray-700 border border-gray-800 px-2 py-1 rounded bg-dark-800/50">
+                build: 1.0.0+alpha.29032026.7f3a2d
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        lucide.createIcons();
+
+        // Scroll Reveal
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealCallback = (entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        };
+        const revealObserver = new IntersectionObserver(revealCallback, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // Neural Canvas Animation (Angepasst mit etwas wärmeren Akzenten)
+        const canvas = document.getElementById('neuralCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        function initCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            particles = [];
+            const particleCount = Math.floor((width * height) / 18000);
+            
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.4,
+                    vy: (Math.random() - 0.5) * 0.4,
+                    radius: Math.random() * 1.5 + 0.5,
+                    // Einige Partikel gold färben
+                    isGold: Math.random() > 0.8
+                });
+            }
+        }
+
+        function drawNeuralNetwork() {
+            ctx.clearRect(0, 0, width, height);
+            
+            for (let i = 0; i < particles.length; i++) {
+                let p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                
+                if (p.x < 0 || p.x > width) p.vx *= -1;
+                if (p.y < 0 || p.y > height) p.vy *= -1;
+                
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p.isGold ? 'rgba(255, 215, 0, 0.4)' : 'rgba(226, 232, 240, 0.3)';
+                ctx.fill();
+                
+                for (let j = i + 1; j < particles.length; j++) {
+                    let p2 = particles[j];
+                    let dx = p.x - p2.x;
+                    let dy = p.y - p2.y;
+                    let dist = Math.sqrt(dx * dx + dy * dy);
+                    
+                    if (dist < 130) {
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        let opacity = 0.15 - (dist/130)*0.15;
+                        ctx.strokeStyle = (p.isGold || p2.isGold) ? `rgba(255, 215, 0, ${opacity})` : `rgba(226, 232, 240, ${opacity})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(drawNeuralNetwork);
+        }
+
+        window.addEventListener('resize', initCanvas);
+        initCanvas();
+        drawNeuralNetwork();
+
+        // Navbar Scroll
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                nav.classList.add('bg-dark-900/90');
+            } else {
+                nav.classList.remove('bg-dark-900/90');
+            }
+        });
+    </script>
+</body>
+</html>
+
+                      

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xSyna | AES Link Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { background-color: #050505; color: #08f26e; font-family: 'JetBrains Mono', monospace; }
+        input, select { background: #111; border: 1px solid #333; color: white; padding: 0.5rem; outline: none; border-radius: 4px; width: 100%; }
+        input:focus, select:focus { border-color: #08f26e; }
+        .btn { background: #08f26e; color: #000; padding: 0.5rem 1rem; border-radius: 4px; font-weight: bold; cursor: pointer; }
+        .btn:hover { background: #00ff9d; }
+    </style>
+</head>
+<body class="p-8">
+
+    <div class="max-w-2xl mx-auto" id="main-app">
+        <div class="flex items-center gap-3 mb-8 border-b border-[#333] pb-4">
+            <i data-lucide="terminal" class="w-6 h-6"></i>
+            <h1 class="text-2xl font-bold">AES Link Generator</h1>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6 mb-6">
+            <div>
+                <label class="block text-xs text-gray-500 mb-1">Ticket Typ</label>
+                <select id="i-type">
+                    <option value="S">Support (S)</option>
+                    <option value="T">Transaktion (T)</option>
+                    <option value="SP">Sponsoring (SP)</option>
+                    <option value="E">Emergency (E)</option>
+                    <option value="U">UpTime/Labs (U)</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs text-gray-500 mb-1">Name (Wird verschlüsselt)</label>
+                <input type="text" id="i-name" placeholder="z.B. Gustav M.">
+            </div>
+            <div>
+                <label class="block text-xs text-gray-500 mb-1">Custom Mailto</label>
+                <input type="email" id="i-mail" placeholder="Optional">
+            </div>
+            <div>
+                <label class="block text-xs text-gray-500 mb-1">Gültigkeit</label>
+                <select id="i-exp">
+                    <option value="0">Unbegrenzt</option>
+                    <option value="24">24 Stunden</option>
+                    <option value="168">7 Tage</option>
+                </select>
+            </div>
+            <div class="col-span-2">
+                <label class="block text-xs text-gray-500 mb-1">Basis URL</label>
+                <input type="text" id="i-base" value="https://xsyna.de/ticket">
+            </div>
+        </div>
+
+        <button onclick="generateEncryptedLink()" class="btn w-full mb-8 flex items-center justify-center gap-2">
+            <i data-lucide="lock" class="w-4 h-4"></i> AES-256 Payload Generieren
+        </button>
+
+        <div id="output-box" class="bg-[#111] border border-[#333] p-4 rounded hidden">
+            <textarea id="output-url" class="w-full h-24 mb-4 font-mono text-sm text-white bg-black border border-[#333] p-2" readonly></textarea>
+            <button onclick="copyUrl()" class="px-4 py-2 bg-white text-black text-sm font-bold rounded">Kopieren</button>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // SELBER SCHLÜSSEL WIE IM PORTAL!
+        const SECRET_KEY_STRING = "xSyna_Super_Secret_AES_Key_2026"; 
+
+        async function getEncryptionKey() {
+            const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(SECRET_KEY_STRING));
+            return crypto.subtle.importKey('raw', hash, {name: 'AES-GCM'}, false, ['encrypt']);
+        }
+
+        // Hilfsfunktion: Uint8Array zu Base64URL
+        function uint8ArrayToBase64Url(bytes) {
+            let binary = '';
+            for (let i = 0; i < bytes.byteLength; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return window.btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+        }
+
+        function getTicketId(type) {
+            const now = new Date();
+            const dd = String(now.getDate()).padStart(2, '0');
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const yy = String(now.getFullYear()).slice(2);
+            const hh = String(now.getHours()).padStart(2, '0');
+            const min = String(now.getMinutes()).padStart(2, '0');
+            return `${type}-${dd}${mm}${yy}${hh}${min}`;
+        }
+
+        async function generateEncryptedLink() {
+            const type = document.getElementById('i-type').value;
+            const name = document.getElementById('i-name').value;
+            if(!name) return alert("Name ist erforderlich!");
+            
+            const mail = document.getElementById('i-mail').value;
+            const expHours = parseInt(document.getElementById('i-exp').value);
+            const baseUrl = document.getElementById('i-base').value;
+
+            // JSON Payload erstellen
+            const payloadObj = {
+                id: getTicketId(type),
+                type: type,
+                name: name
+            };
+            if (expHours > 0) payloadObj.exp = Date.now() + (expHours * 60 * 60 * 1000);
+            if (mail) payloadObj.mail = mail;
+
+            const jsonString = JSON.stringify(payloadObj);
+            const encodedData = new TextEncoder().encode(jsonString);
+
+            // AES-GCM Verschlüsselung
+            const key = await getEncryptionKey();
+            const iv = crypto.getRandomValues(new Uint8Array(12)); // 12 Bytes IV für GCM
+            const ciphertextBuffer = await crypto.subtle.encrypt({ name: 'AES-GCM', iv: iv }, key, encodedData);
+            
+            // IV und Ciphertext zusammenfügen
+            const ciphertextArray = new Uint8Array(ciphertextBuffer);
+            const combinedArray = new Uint8Array(iv.length + ciphertextArray.length);
+            combinedArray.set(iv);
+            combinedArray.set(ciphertextArray, iv.length);
+
+            // Als URL-sicheres Base64 kodieren
+            const safeBase64 = uint8ArrayToBase64Url(combinedArray);
+
+            const finalUrl = `${baseUrl}?payload=${safeBase64}`;
+            
+            document.getElementById('output-url').value = finalUrl;
+            document.getElementById('output-box').classList.remove('hidden');
+        }
+
+        function copyUrl() {
+            const urlText = document.getElementById('output-url');
+            urlText.select();
+            document.execCommand('copy');
+            alert("Verschlüsselter Link kopiert!");
+        }
+    </script>
+</body>
+</html>
+
+

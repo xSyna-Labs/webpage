@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="xsyna-version" content="1.0.0+alpha.05042026.f7a8b9">
+    <title>404 | System Anomalie - xSyna</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] },
+                    colors: { neon: { blue: '#00f0ff', red: '#ff003c' }, dark: { 900: '#0a0a0c' } },
+                    animation: { 'pulse-fast': 'pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite' }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #0a0a0c; color: #ffffff; overflow: hidden; }
+        .glass-card {
+            background: rgba(18, 18, 21, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 0, 60, 0.2);
+            box-shadow: 0 0 40px rgba(255, 0, 60, 0.1);
+        }
+        
+        /* Glitch Effect */
+        .glitch-wrapper { position: relative; }
+        .glitch-text {
+            font-size: 8rem;
+            font-weight: 800;
+            line-height: 1;
+            position: relative;
+            color: white;
+            text-shadow: 0 0 20px rgba(255,0,60,0.5);
+        }
+        .glitch-text::before, .glitch-text::after {
+            content: "404";
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #0a0a0c;
+        }
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -2px 0 #00f0ff;
+            clip: rect(24px, 550px, 90px, 0);
+            animation: glitch-anim 3s infinite linear alternate-reverse;
+        }
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -2px 0 #ff003c;
+            clip: rect(85px, 550px, 140px, 0);
+            animation: glitch-anim 2.5s infinite linear alternate-reverse;
+        }
+
+        @keyframes glitch-anim {
+            0% { clip: rect(12px, 9999px, 86px, 0); }
+            20% { clip: rect(65px, 9999px, 11px, 0); }
+            40% { clip: rect(104px, 9999px, 35px, 0); }
+            60% { clip: rect(15px, 9999px, 76px, 0); }
+            80% { clip: rect(96px, 9999px, 13px, 0); }
+            100% { clip: rect(43px, 9999px, 122px, 0); }
+        }
+
+        /* Background Scanline */
+        .scanline {
+            width: 100%; height: 100px;
+            background: linear-gradient(0deg, rgba(0,0,0,0) 0%, rgba(255,0,60,0.1) 50%, rgba(0,0,0,0) 100%);
+            opacity: 0.1;
+            position: absolute;
+            bottom: 100%;
+            animation: scanline 8s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes scanline { 0% { bottom: 100%; } 100% { bottom: -100px; } }
+    </style>
+</head>
+<body class="antialiased flex items-center justify-center min-h-screen">
+
+    <div class="scanline"></div>
+
+    <div class="max-w-3xl w-full px-6 relative z-10 text-center">
+        
+        <div class="glitch-wrapper mb-8">
+            <div class="glitch-text tracking-tighter">404</div>
+        </div>
+
+        <div class="glass-card p-8 rounded-2xl relative overflow-hidden inline-block text-left w-full max-w-lg mx-auto">
+            <div class="absolute top-0 left-0 w-full h-1 bg-neon-red"></div>
+            
+            <div class="flex items-center gap-3 mb-4 text-neon-red font-mono text-sm uppercase tracking-widest">
+                <i data-lucide="triangle-alert" class="w-5 h-5 animate-pulse-fast"></i>
+                System Anomalie erkannt
+            </div>
+
+            <h2 class="text-2xl font-bold mb-4">Neuronaler Pfad nicht gefunden.</h2>
+            
+            <p class="text-gray-400 mb-6 text-sm leading-relaxed">
+                Der von Ihnen angeforderte Endpunkt existiert in unserer aktuellen Architektur nicht. Möglicherweise wurde die Seite verschoben oder Sie haben einen inaktiven Node der xSyna-Simulation aufgerufen.
+            </p>
+
+            <!-- Dynamic URL Display -->
+            <div class="bg-black/50 p-4 rounded border border-white/5 font-mono text-xs text-gray-500 mb-8 break-all">
+                > Target Request: <span id="failed-url" class="text-neon-red"></span>
+                <br>> Status: <span class="text-white">ERR_NODE_NOT_FOUND</span>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="index.html" class="px-6 py-3 bg-white text-dark-900 font-bold rounded hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
+                    <i data-lucide="home" class="w-4 h-4"></i> System Neustart
+                </a>
+                <a href="mailto:support@xsyna.de" class="px-6 py-3 border border-white/20 text-gray-300 font-bold rounded hover:bg-white/5 transition-colors flex items-center justify-center gap-2">
+                    <i data-lucide="life-buoy" class="w-4 h-4"></i> Support kontaktieren
+                </a>
+            </div>
+        </div>
+        
+        <!-- CI/CD Versioning -->
+        <div class="mt-12 font-mono text-[10px] text-gray-600">
+            build: 1.0.0+alpha.05042026.f7a8b9 | xSyna Administration
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        // Lese die fehlerhafte URL aus und zeige sie im Terminal-Block an
+        document.getElementById('failed-url').innerText = window.location.href;
+    </script>
+</body>
+</html>
+

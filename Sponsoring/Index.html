@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Automatisierte Versionierung -->
+    <meta name="xsyna-version" content="1.0.0+alpha.05042026.f7a8b9">
+    <title>xSyna Sponsoring | Partnerschaften & Förderung</title>
+    <meta name="description" content="Werden Sie Teil der neuromorphen Revolution. Informationen für Banken, Technologie-Partner und private Sponsoren von xSyna.">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        neon: { blue: '#00f0ff', purple: '#7000ff', green: '#08f26e', gold: '#ffd700' },
+                        dark: { 900: '#0a0a0c', 800: '#121215', 700: '#1c1c21' }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #0a0a0c; color: #ffffff; overflow-x: hidden; }
+        .glass-card {
+            background: rgba(18, 18, 21, 0.6);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(8, 242, 110, 0.02) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(8, 242, 110, 0.02) 1px, transparent 1px);
+            mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+            -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+        }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s cubic-bezier(0.5, 0, 0, 1); }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        .glow-green { text-shadow: 0 0 20px rgba(8, 242, 110, 0.4); }
+        #neuralCanvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none; }
+    </style>
+</head>
+<body class="antialiased selection:bg-neon-green selection:text-dark-900 relative">
+
+    <canvas id="neuralCanvas"></canvas>
+    <div class="fixed top-0 left-0 w-full h-screen -z-10 bg-grid pointer-events-none"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-card border-b border-white/10 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold tracking-tighter flex items-center gap-2">
+                <i data-lucide="award" class="text-neon-green"></i>
+                <span>xSyna Sponsoring<span class="text-neon-green">.</span></span>
+            </div>
+            <div class="hidden md:flex gap-8 text-sm font-mono text-gray-400">
+                <a href="index.html" class="hover:text-white transition-colors flex items-center gap-2">
+                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Zurück zu xSyna
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <main class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden flex items-center">
+        <div class="max-w-7xl mx-auto px-6 relative z-10 w-full text-center">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full glass-card border border-neon-green/30 text-neon-green text-xs font-mono mb-6 reveal">
+                <span class="w-2 h-2 rounded-full bg-neon-green animate-pulse"></span>
+                Partnerschaften & Hardware-Förderung
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-8 reveal" style="transition-delay: 100ms;">
+                Investition in<br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-neon-green glow-green">Souveräne KI.</span>
+            </h1>
+            
+            <p class="text-lg md:text-xl text-gray-400 max-w-2xl mx-auto mb-12 font-light leading-relaxed reveal" style="transition-delay: 200ms;">
+                Wir suchen strategische Partner, Banken und Visionäre, die uns bei der Überführung unserer 128-Neuronen SPU-Simulation in erste physische FPGA-Prototypen unterstützen.
+            </p>
+        </div>
+    </main>
+
+    <!-- Lean & Pitch Section -->
+    <section class="py-12 border-y border-white/5 bg-dark-800/80 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-6 reveal">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-8 p-6 md:p-8 rounded-2xl glass-card border-neon-green/20 relative overflow-hidden">
+                <div class="absolute left-0 top-0 w-64 h-64 bg-neon-green/5 rounded-full blur-3xl -z-10 transform -translate-x-1/2 -translate-y-1/2"></div>
+                
+                <div class="max-w-2xl">
+                    <h3 class="text-xl font-bold mb-2 flex items-center gap-2 text-white">
+                        <i data-lucide="trending-up" class="text-neon-green"></i> 100% Forschungs-Effizienz
+                    </h3>
+                    <p class="text-gray-400 text-sm leading-relaxed">
+                        xSyna agiert als unabhängiges Projekt mit einem kompromisslosen Bootstrapping-Ansatz. Unsere gesamte hochmoderne Cloud-Infrastruktur kostet uns <strong>lediglich 4,49 € im Jahr</strong>. Das bedeutet für Sponsoren: Jeder Euro Förderung fließt nicht in Verwaltung oder Gehälter, sondern direkt in Hardware-Komponenten, FPGA-Boards und Serverkapazitäten für <a href="labs.html" class="text-neon-cyan hover:underline">xSyna Labs</a>.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Kontakt-Hierarchie (Pitch & Orga) -->
+    <section class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="text-sm font-mono text-neon-green mb-2 reveal text-center">Ihre Ansprechpartner</h2>
+            <h3 class="text-3xl md:text-5xl font-bold mb-16 reveal text-center">Kommunikations-Struktur</h3>
+
+            <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+                <!-- Hype Sponsorship -->
+                <div class="glass-card p-8 rounded-2xl border border-neon-purple/20 hover:border-neon-purple/50 transition-colors group reveal">
+                    <i data-lucide="star" class="w-8 h-8 text-neon-purple mb-4"></i>
+                    <h4 class="text-xl font-bold mb-2">Erstkontakt & Kampagnen</h4>
+                    <p class="text-sm text-gray-400 mb-6 leading-relaxed">
+                        Für interessierte Sponsoren, Marketing-Partnerschaften und allgemeine Förder-Anfragen ist unser Hype-Team die erste Anlaufstelle.
+                    </p>
+                    <a href="mailto:sponsoring@hype.xsyna.de" class="inline-flex items-center gap-2 px-4 py-2 bg-neon-purple/10 text-neon-purple font-mono text-sm rounded border border-neon-purple/30 hover:bg-neon-purple/20 transition-colors">
+                        sponsoring@hype.xsyna.de
+                    </a>
+                </div>
+
+                <!-- Projektleitung / Admin -->
+                <div class="glass-card p-8 rounded-2xl border border-neon-blue/20 hover:border-neon-blue/50 transition-colors group reveal" style="transition-delay: 100ms;">
+                    <i data-lucide="shield-check" class="w-8 h-8 text-neon-blue mb-4"></i>
+                    <h4 class="text-xl font-bold mb-2">Institutionen & Banken</h4>
+                    <p class="text-sm text-gray-400 mb-6 leading-relaxed">
+                        Banken (wie die VR Bank), institutionelle Förderer und strategische Partner für Hardware-Prototyping wenden sich direkt an die Projektleitung.
+                    </p>
+                    <a href="mailto:service@xsyna.de" class="inline-flex items-center gap-2 px-4 py-2 bg-neon-blue/10 text-neon-blue font-mono text-sm rounded border border-neon-blue/30 hover:bg-neon-blue/20 transition-colors mb-2">
+                        service@xsyna.de
+                    </a>
+                    <a href="mailto:ceo@xsyna.de" class="inline-flex items-center gap-2 px-4 py-2 bg-dark-800 text-gray-400 font-mono text-xs rounded border border-white/10 hover:text-white transition-colors">
+                        ceo@xsyna.de (Level 0)
+                    </a>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center reveal" style="transition-delay: 200ms;">
+                <p class="text-xs text-gray-500 max-w-xl mx-auto">
+                    Nach erfolgreicher Evaluierung einer Partnerschaft wird die finanzielle Abwicklung sicher und transparent über <a href="payments.html" class="text-neon-gold hover:underline">payments@xsyna.de</a> gesteuert.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/5 text-center bg-dark-900/80 backdrop-blur-md relative z-10">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="flex items-center justify-center gap-2 mb-6">
+                <i data-lucide="cpu" class="text-gray-500 w-5 h-5"></i>
+                <span class="font-bold tracking-tighter text-gray-400">xSyna Project</span>
+            </div>
+            <div class="font-mono text-[10px] text-gray-500 mb-6 inline-flex items-center gap-2 border border-white/5 px-3 py-1.5 rounded bg-black/50">
+                <span class="w-1.5 h-1.5 rounded-full bg-neon-green"></span> build: 1.0.0+alpha.05042026.f7a8b9
+            </div>
+            <p class="text-xs text-gray-600">© 2026 xSyna Administration. Alle Rechte vorbehalten. Kein eingetragenes Gewerbe.</p>
+        </div>
+    </footer>
+
+    <!-- Spiking Network Simulation (Green Edition) -->
+    <script>
+        lucide.createIcons();
+        const revealObserver = new IntersectionObserver(e => e.forEach(entry => { if(entry.isIntersecting) entry.target.classList.add('active'); }), { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        const canvas = document.getElementById('neuralCanvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, neurons = [], connections = [], spikes = [];
+
+        class Neuron {
+            constructor(x, y) {
+                this.x = x; this.y = y;
+                this.vx = (Math.random() - 0.5) * 0.2; this.vy = (Math.random() - 0.5) * 0.2;
+                this.radius = Math.random() * 1.5 + 1; this.activation = 0;
+            }
+            update() {
+                this.x += this.vx; this.y += this.vy;
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+                if (this.activation > 0) this.activation -= 0.02;
+            }
+            draw() {
+                ctx.beginPath(); ctx.arc(this.x, this.y, this.radius + (this.activation * 2), 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${0 + this.activation*8}, ${100 + this.activation*142}, ${50 + this.activation*60}, ${0.2 + this.activation*0.8})`;
+                ctx.fill();
+            }
+        }
+
+        class Spike {
+            constructor(start, end) {
+                this.start = start; this.end = end; this.progress = 0; this.speed = 0.01 + (Math.random() * 0.02);
+            }
+            update() {
+                this.progress += this.speed;
+                if (this.progress >= 1) { this.end.activation = 1; return true; }
+                return false;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.start.x + (this.end.x - this.start.x)*this.progress, this.start.y + (this.end.y - this.start.y)*this.progress, 2, 0, Math.PI * 2);
+                ctx.fillStyle = '#08f26e'; ctx.shadowBlur = 10; ctx.shadowColor = '#08f26e'; ctx.fill(); ctx.shadowBlur = 0;
+            }
+        }
+
+        function init() {
+            width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight;
+            neurons = Array.from({length: 70}, () => new Neuron(Math.random()*width, Math.random()*height));
+        }
+
+        function loop() {
+            ctx.clearRect(0, 0, width, height); connections = [];
+            neurons.forEach((n, i) => {
+                n.update();
+                neurons.slice(i+1).forEach(n2 => {
+                    const d = Math.hypot(n.x - n2.x, n.y - n2.y);
+                    if (d < 150) {
+                        connections.push([n, n2]);
+                        ctx.beginPath(); ctx.moveTo(n.x, n.y); ctx.lineTo(n2.x, n2.y);
+                        ctx.strokeStyle = `rgba(8, 242, 110, ${0.1 - (d/150)*0.1})`; ctx.stroke();
+                    }
+                });
+                n.draw();
+            });
+            if (Math.random() < 0.05 && connections.length > 0) spikes.push(new Spike(...connections[Math.floor(Math.random()*connections.length)]));
+            spikes = spikes.filter(s => { s.draw(); return !s.update(); });
+            requestAnimationFrame(loop);
+        }
+        window.addEventListener('resize', init); init(); loop();
+    </script>
+</body>
+</html>
+

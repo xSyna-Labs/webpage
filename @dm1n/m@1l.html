@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="version" content="1.0.0+alpha.05042026.a1b2c3">
+    <title>xSyna | Email Stylist Pro V3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+        body { background-color: #050505; color: #00f0ff; font-family: 'JetBrains Mono', monospace; }
+        .input-field { background: #111; border: 1px solid #222; color: white; padding: 10px; width: 100%; border-radius: 4px; outline: none; border-left: 2px solid #00f0ff; font-size: 13px; }
+        .input-field:focus { border-color: #00f0ff; background: #161616; }
+        .btn-action { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); cursor: pointer; }
+        .btn-action:active { transform: scale(0.97); }
+        label { display: block; text-transform: uppercase; font-size: 9px; letter-spacing: 2px; color: #555; margin-bottom: 6px; font-weight: bold; }
+    </style>
+</head>
+<body class="p-4 md:p-8 flex flex-col items-center">
+
+    <div class="w-full max-w-6xl">
+        <header class="mb-8 border-b border-[#222] pb-6 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-black text-white tracking-tight flex items-center gap-2">
+                    <i data-lucide="mail-plus" class="text-neon-blue"></i> EMAIL <span class="text-neon-blue">EDITOR</span>
+                </h1>
+                <p class="text-[9px] text-gray-500 mt-1 uppercase">Build: 1.0.0+alpha.05042026.a1b2c3</p>
+            </div>
+            <div class="hidden md:flex gap-4 items-center">
+                <span class="text-[10px] text-gray-600">AES-256-GCM READY</span>
+                <div class="w-2 h-2 rounded-full bg-neon-blue animate-pulse"></div>
+            </div>
+        </header>
+
+        <div class="grid lg:grid-cols-2 gap-8">
+            <!-- EDITOR COLUMN -->
+            <div class="space-y-4 bg-[#0a0a0c] p-6 rounded-xl border border-[#111]">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label>Name</label>
+                        <input type="text" id="name" value="Gustav" class="input-field" oninput="update()">
+                    </div>
+                    <div>
+                        <label>Betreffzeile</label>
+                        <input type="text" id="subject" value="🔒 Gesichertes Zertifikat bereit" class="input-field" oninput="update()">
+                    </div>
+                </div>
+
+                <div>
+                    <label>Überschrift (Header)</label>
+                    <input type="text" id="header" value="Zertifikat bereit" class="input-field" oninput="update()">
+                </div>
+
+                <div>
+                    <label>Nachricht (Message)</label>
+                    <textarea id="message" rows="3" class="input-field h-24" oninput="update()">Identität wurde verifiziert. Ein neues AES-256 verschlüsseltes Dokument wurde für Sie hinterlegt.</textarea>
+                </div>
+
+                <div>
+                    <label>Button Text</label>
+                    <input type="text" id="btn-text" value="DOKUMENT ÖFFNEN" class="input-field" oninput="update()">
+                </div>
+
+                <div>
+                    <label>Verschlüsselter Link (Target URL)</label>
+                    <input type="text" id="link" placeholder="https://xsyna.de/ticket?payload=..." class="input-field" oninput="update()">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 pt-4">
+                    <button onclick="copyRichText()" class="btn-action flex items-center justify-center gap-2 bg-white text-black font-black p-3 rounded text-sm hover:bg-gray-200">
+                        <i data-lucide="copy" class="w-4 h-4"></i> KOPIEREN
+                    </button>
+                    <button onclick="openInGmail()" class="btn-action flex items-center justify-center gap-2 bg-[#ea4335] text-white font-black p-3 rounded text-sm hover:bg-[#d33426]">
+                        <i data-lucide="external-link" class="w-4 h-4"></i> GMAIL (WEB)
+                    </button>
+                </div>
+            </div>
+
+            <!-- PREVIEW COLUMN -->
+            <div class="flex flex-col h-full">
+                <label>VORSCHAU (Inhalt markieren & kopieren)</label>
+                <div id="preview-output" class="bg-[#f0f0f0] rounded-xl overflow-hidden shadow-2xl p-4 md:p-10 flex-grow border-4 border-dashed border-[#222]">
+                    <!-- Table Design -->
+                </div>
+                <p class="mt-4 text-[10px] text-gray-500 italic">
+                    Tipp: Wenn der Button "Kopieren" am Handy versagt, halte den Inhalt in der Vorschau lange gedrückt, markiere alles und wähle manuell "Kopieren".
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function update() {
+            const name = document.getElementById('name').value || "Empfänger";
+            const header = document.getElementById('header').value || "Mitteilung";
+            const message = document.getElementById('message').value.replace(/\n/g, '<br>');
+            const btnText = document.getElementById('btn-text').value || "ÖFFNEN";
+            const link = document.getElementById('link').value || "#";
+            
+            // Tabellen-Layout für maximale Kompatibilität
+            const html = `
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #0a0a0c; font-family: 'Segoe UI', Arial, sans-serif; border-collapse: collapse;">
+                    <tr>
+                        <td align="center" style="padding: 40px 10px;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="320" style="background-color: #121215; border: 1px solid #222222; border-radius: 12px;">
+                                <tr>
+                                    <td align="center" style="padding: 40px 25px;">
+                                        <div style="color: #00f0ff; font-family: 'Courier New', Courier, monospace; font-size: 10px; letter-spacing: 4px; margin-bottom: 15px; font-weight: bold;">XSYNA // PROTOCOL</div>
+                                        <div style="width: 30px; height: 1px; background: #00f0ff; margin-bottom: 20px;"></div>
+                                        <h2 style="color: #ffffff; font-size: 22px; margin: 0 0 12px 0; font-weight: 800; letter-spacing: -0.5px;">${header}</h2>
+                                        <p style="color: #999999; font-size: 14px; line-height: 1.6; margin: 0 0 25px 0;">
+                                            Hallo <strong style="color: #ffffff;">${name}</strong>,<br>
+                                            ${message}
+                                        </p>
+                                        <a href="${link}" style="background-color: #00f0ff; color: #000000; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: 800; font-size: 13px; display: inline-block; text-transform: uppercase;">
+                                            ${btnText}
+                                        </a>
+                                        <div style="margin-top: 35px; border-top: 1px solid #1c1c21; padding-top: 20px;">
+                                            <span style="color: #333; font-size: 9px; font-family: monospace;">VER: 1.0.0+alpha.05042026.a1b2c3</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            `;
+            document.getElementById('preview-output').innerHTML = html;
+        }
+
+        async function copyRichText() {
+            const container = document.getElementById('preview-output');
+            
+            try {
+                // Versuche die moderne Clipboard API für HTML
+                const blob = new Blob([container.innerHTML], { type: 'text/html' });
+                const plain = new Blob([container.innerText], { type: 'text/plain' });
+                const data = [new ClipboardItem({ 'text/html': blob, 'text/plain': plain })];
+                await navigator.clipboard.write(data);
+                
+                const btn = document.querySelector('button');
+                btn.innerHTML = '<i data-lucide="check"></i> BEREIT';
+                setTimeout(() => { update(); lucide.createIcons(); }, 2000);
+                alert("Design ist in der Zwischenablage. In Gmail einfügen!");
+            } catch (err) {
+                // Manueller Fallback: Selektieren
+                const range = document.createRange();
+                range.selectNode(container);
+                const selection = window.getSelection();
+                selection.removeAllRanges();
+                selection.addRange(range);
+                document.execCommand('copy');
+                alert("Kopiert (Standard). Bitte in Gmail einfügen.");
+            }
+        }
+
+        function openInGmail() {
+            const subject = encodeURIComponent(document.getElementById('subject').value);
+            // Web-Interface Link
+            const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&su=${subject}`;
+            window.open(gmailUrl, '_blank');
+        }
+
+        lucide.createIcons();
+        update();
+    </script>
+</body>
+</html>
+

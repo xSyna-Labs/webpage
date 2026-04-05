@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="de" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="xsyna-version" content="1.0.0+alpha.05042026.a1b2c3">
+    <title>xSyna | Secure Verification</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], mono: ['JetBrains Mono', 'monospace'] },
+                    colors: {
+                        neon: { blue: '#00f0ff', purple: '#7000ff', green: '#08f26e', gold: '#ffd700', red: '#ff003c', cyan: '#00f0ff' },
+                        dark: { 900: '#0a0a0c', 800: '#121215' }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #0a0a0c; color: #ffffff; }
+        .glass-card {
+            background: rgba(18, 18, 21, 0.8);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+        }
+        .bg-grid {
+            background-size: 40px 40px;
+            background-image: linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col items-center justify-center relative p-6">
+
+    <div class="fixed top-0 left-0 w-full h-full -z-10 bg-grid pointer-events-none"></div>
+
+    <div id="loading" class="flex flex-col items-center justify-center gap-4">
+        <i data-lucide="loader-2" class="w-10 h-10 text-gray-500 animate-spin"></i>
+        <p class="font-mono text-sm text-gray-500" id="loading-text">Entschlüssele AES-256 Payload...</p>
+    </div>
+
+    <main id="ticket-container" class="w-full max-w-2xl hidden reveal">
+        <div id="cert-badge" class="flex items-center gap-2 px-4 py-2 rounded-t-xl font-mono text-sm font-bold w-full justify-center"></div>
+
+        <div class="glass-card rounded-b-xl p-8 relative overflow-hidden">
+            <div id="type-border" class="absolute top-0 left-0 w-full h-1"></div>
+            
+            <div class="flex justify-between items-start mb-8 border-b border-white/10 pb-6">
+                <div>
+                    <h1 class="text-3xl font-bold mb-1 flex items-center gap-3">
+                        <span id="type-icon"></span>
+                        <span id="type-title">Lade...</span>
+                    </h1>
+                    <p class="text-gray-400 font-mono text-sm" id="ticket-id">ID: Lade...</p>
+                </div>
+                <div class="text-right">
+                    <img src="" id="qr-code" class="rounded opacity-50" alt="QR">
+                </div>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-8 mb-8">
+                <div>
+                    <h3 class="text-xs font-mono text-gray-500 uppercase tracking-widest mb-1">Autorisiert für</h3>
+                    <p class="text-lg font-bold" id="auth-name">Lade...</p>
+                </div>
+                <div>
+                    <h3 class="text-xs font-mono text-gray-500 uppercase tracking-widest mb-1">Ablaufdatum</h3>
+                    <p class="text-lg font-mono text-gray-300" id="expiry-date">Lade...</p>
+                </div>
+            </div>
+
+            <div class="bg-black/40 rounded-lg p-5 border border-white/5 mb-8">
+                <h3 class="text-xs font-mono text-gray-500 uppercase tracking-widest mb-3">System-Informationen</h3>
+                <p id="ticket-message" class="text-sm text-gray-400 leading-relaxed"></p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4">
+                <a id="action-btn" href="#" class="px-6 py-3 bg-white text-dark-900 font-bold rounded hover:bg-gray-200 transition-colors flex items-center justify-center gap-2 flex-1">
+                    <i data-lucide="mail" class="w-4 h-4"></i> Kontakt aufnehmen
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="mt-12 font-mono text-[10px] text-gray-600 text-center">
+        build: 1.0.0+alpha.05042026.a1b2c3 | xSyna Certificate Authority
+    </footer>
+
+    <script>
+        // --- KRYPTOGRAFIE KERN ---
+        const SECRET_KEY_STRING = "xSyna_Super_Secret_AES_Key_2026"; 
+
+        const typeConfig = {
+            'S': { title: 'Support Ticket', color: 'bg-neon-blue', textColor: 'text-neon-blue', border: 'bg-neon-blue', icon: 'life-buoy', mail: 'support@xsyna.de', msg: 'Ihr Support-Anliegen wurde im System registriert. Dieses Dokument ist AES-256 verschlüsselt.' },
+            'T': { title: 'Transaktion', color: 'bg-neon-gold', textColor: 'text-neon-gold', border: 'bg-neon-gold', icon: 'wallet', mail: 'payments@xsyna.de', msg: 'Zahlung offiziell bestätigt. Die Daten dieses Zertifikats wurden End-to-End verschlüsselt übertragen.' },
+            'SP': { title: 'Sponsoring', color: 'bg-neon-green', textColor: 'text-neon-green', border: 'bg-neon-green', icon: 'award', mail: 'sponsoring@hype.xsyna.de', msg: 'Partnerschafts-Akte geöffnet. Vielen Dank für Ihr Interesse an der neuromorphen Forschung.' },
+            'E': { title: 'Emergency', color: 'bg-neon-red', textColor: 'text-neon-red', border: 'bg-neon-red', icon: 'triangle-alert', mail: '!@xsyna.de', msg: 'Kritischer System-Vorgang. Bitte priorisieren Sie diese Anfrage.' },
+            'U': { title: 'UpTime / Labs', color: 'bg-neon-cyan', textColor: 'text-neon-cyan', border: 'bg-neon-cyan', icon: 'activity', mail: 'labs@xsyna.de', msg: 'Netzwerk-Diagnose und Simulations-Daten erfolgreich verknüpft.' }
+        };
+
+        // Hilfsfunktion: Base64URL zu Uint8Array
+        function base64UrlToUint8Array(base64Url) {
+            const padding = '='.repeat((4 - base64Url.length % 4) % 4);
+            const base64 = (base64Url + padding).replace(/-/g, '+').replace(/_/g, '/');
+            const rawData = window.atob(base64);
+            return new Uint8Array([...rawData].map(char => char.charCodeAt(0)));
+        }
+
+        async function getDecryptionKey() {
+            const hash = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(SECRET_KEY_STRING));
+            return crypto.subtle.importKey('raw', hash, {name: 'AES-GCM'}, false, ['decrypt']);
+        }
+
+        async function processTicket() {
+            const params = new URLSearchParams(window.location.search);
+            const payload = params.get('payload');
+
+            if (!payload) {
+                showError("Kein Payload gefunden. URL ist unvollständig.");
+                return;
+            }
+
+            try {
+                // 1. Daten extrahieren
+                const encryptedData = base64UrlToUint8Array(payload);
+                const iv = encryptedData.slice(0, 12); // Ersten 12 Bytes sind der Initialisierungsvektor
+                const ciphertext = encryptedData.slice(12);
+
+                // 2. Entschlüsseln
+                const key = await getDecryptionKey();
+                const decryptedBuffer = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: iv }, key, ciphertext);
+                
+                // 3. JSON parsen
+                const decryptedString = new TextDecoder().decode(decryptedBuffer);
+                const ticketData = JSON.parse(decryptedString);
+
+                validateAndDisplay(ticketData);
+
+            } catch (e) {
+                console.error(e);
+                showError("AES-Entschlüsselung fehlgeschlagen. Der Payload ist manipuliert oder beschädigt.");
+            }
+        }
+
+        function validateAndDisplay(data) {
+            // Ablaufdatum prüfen
+            let isExpired = false;
+            let expiryText = "Unbegrenzt gültig";
+            
+            if (data.exp) {
+                if (Date.now() > data.exp) isExpired = true;
+                const date = new Date(data.exp);
+                expiryText = `${date.toLocaleDateString('de-DE')} - ${date.toLocaleTimeString('de-DE')} Uhr`;
+            }
+
+            if (isExpired) {
+                showError("Sicherheitszertifikat ist abgelaufen", expiryText);
+                return;
+            }
+
+            // UI Aufbauen
+            const config = typeConfig[data.type] || typeConfig['S'];
+            
+            document.getElementById('type-title').innerText = config.title;
+            document.getElementById('type-title').className = `text-3xl font-bold mb-1 flex items-center gap-3 ${config.textColor}`;
+            document.getElementById('type-icon').innerHTML = `<i data-lucide="${config.icon}" class="w-8 h-8"></i>`;
+            document.getElementById('type-border').className = `absolute top-0 left-0 w-full h-1 ${config.border}`;
+            
+            document.getElementById('ticket-id').innerText = `ID: ${data.id}`;
+            document.getElementById('auth-name').innerText = data.name;
+            document.getElementById('expiry-date').innerText = expiryText;
+            document.getElementById('ticket-message').innerText = config.msg;
+
+            const finalMail = data.mail || config.mail;
+            document.getElementById('action-btn').href = `mailto:${finalMail}?subject=Ticket%20${data.id}`;
+            
+            // Generate QR
+            document.getElementById('qr-code').src = `https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(window.location.href)}&bgcolor=0a0a0c&color=08f26e`;
+
+            // Badge
+            const badge = document.getElementById('cert-badge');
+            badge.className = "flex items-center gap-2 px-4 py-2 rounded-t-xl font-mono text-sm font-bold w-full justify-center bg-[#08f26e]/10 text-[#08f26e] border border-[#08f26e]/20";
+            badge.innerHTML = `<i data-lucide="shield-check" class="w-4 h-4"></i> AES-256 Verifiziert`;
+
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('ticket-container').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function showError(message, expiryText = "N/A") {
+            document.getElementById('type-title').innerText = "System Anomalie";
+            document.getElementById('type-title').className = "text-3xl font-bold mb-1 flex items-center gap-3 text-neon-red";
+            document.getElementById('type-icon').innerHTML = `<i data-lucide="alert-octagon" class="w-8 h-8"></i>`;
+            document.getElementById('type-border').className = "absolute top-0 left-0 w-full h-1 bg-neon-red";
+            
+            document.getElementById('ticket-id').innerText = "ID: CORRUPTED";
+            document.getElementById('auth-name').innerText = "Nicht autorisiert";
+            document.getElementById('expiry-date').innerText = expiryText;
+            document.getElementById('ticket-message').innerText = message;
+
+            document.getElementById('action-btn').style.display = 'none';
+            document.getElementById('qr-code').style.display = 'none';
+
+            const badge = document.getElementById('cert-badge');
+            badge.className = "flex items-center gap-2 px-4 py-2 rounded-t-xl font-mono text-sm font-bold w-full justify-center bg-neon-red/10 text-neon-red border border-neon-red/20";
+            badge.innerHTML = `<i data-lucide="shield-alert" class="w-4 h-4"></i> Zugriff verweigert`;
+
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('ticket-container').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        setTimeout(processTicket, 600);
+    </script>
+</body>
+</html>
+
+
